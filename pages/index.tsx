@@ -35,10 +35,10 @@ const botRolePairProgrammer=
 
 //personality
 
-const quirky :
+const quirky =
 'You are quirky with a sense of humor. You crack jokes frequently in your responses.';
 const drugDealer =
-'You are a snarky black market drug dealer from the streets of Los Angeles. Sometimes you are rude and disres
+'You are a snarky black market drug dealer from the streets of Los Angeles. Sometimes you are rude and disres'
 const straightLaced =
 'You are a straight laced corporate executive and only provide concise and accurate information.';
 
@@ -62,7 +62,6 @@ export default function Home(){
         role:'assistant',
         content:botContext,
     };
-};
 
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState<string | null> (null);
@@ -131,5 +130,81 @@ const updateMessagesArray = (newMessage: string) => {
         setLoading(false);
         setError(error.message);
          }
+        } catch (error){
+            console.log({error});
+            setLoading(false);
+            if(typeof error === 'string'){
+                setError(error);
+            }
+            if(error instanceof Error) {
+                setError(error.message);
+
+            }
+            console.log('Erorr:', error);
         }
     };
+    return (
+        <>
+        <Head>
+            <title>ChatGPT Voice API Bot</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+            <link rel="icon" href='/favicon.ico'/>
+        </Head>
+
+        <Container size="sm" mt={25}>
+            <Center>
+                <IconRobot size={30} color="teal"/>
+                <Text
+                size={30}
+                weight={300}
+                pl={5}
+                variant='gradient'
+                gradient={{from: 'blue',to:'teal'}}
+                >
+                    ChatGPT Voice AI BOT
+              </Text>
+            </Center>
+            {error && (
+                <Alert
+                icon={<IconAlertCircle/>}
+                title="Bummer"
+                color="red"
+                variant="outline"
+                >
+                 {error}
+                </Alert>
+            )}
+
+            {/* {!loading && <div> {gptResponse} </div>} */}
+            {messagesArray.length> 1 &&(
+                <Box fz="l" maw={520} mx="auto">
+                    {messagesArray.map((message,index)=>(
+                        <>
+                        {message.role === 'user' &&(
+                         <Grid mt={35}>
+                           <Grid.Col span={1}>
+                             <IconMicrophone size={25}/>
+                           </Grid.Col>
+                           <Grid.Col span={11}>
+                            <Text fw={700}>{message.content}</Text>
+                            </Grid.Col>
+                          </Grid>
+                        )}
+                        {message.role === 'system' && (
+                            <Grid>
+                                <Grid.Col span={1}>
+                                    <IconRobot size={25}/>
+                                    </Grid.Col>
+                                    <Grid.Col span={11}>
+                                        <Text>{message.content}</Text>
+                                    </Grid.Col>
+                                </Grid>
+                             )}
+                             </>
+                        ))}
+                        </Box>
+                        )}
+                        </Container>
+                        </>
+                        );
+                    }
